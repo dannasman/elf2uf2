@@ -20,7 +20,7 @@ impl Elf2Uf2 {
         }
     }
 
-    pub fn convert(&mut self, data: &Vec<u8>, buf: &mut Vec<u8>) {
+    pub fn convert(&mut self, data: &[u8], buf: &mut Vec<u8>) {
         self.elf.parse_elf(data);
 
         let family_id: u32 = match self.elf.ehdr.e_machine {

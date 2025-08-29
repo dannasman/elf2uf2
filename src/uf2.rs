@@ -32,18 +32,18 @@ impl Uf2Block {
 
 impl fmt::Display for Uf2Block {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}\n", "=".repeat(70))?;
-        write!(f, "{0: <32} | {1: <35}\n", "Magic start 0", format!("{:#x}", self.magic_start0))?;
-        write!(f, "{}\n", "-".repeat(70))?;
-        write!(f, "{0: <32} | {1: <35}\n", "Magic start 1", format!("{:#x}", self.magic_start1))?;
-        write!(f, "{}\n", "-".repeat(70))?;
-        write!(f, "{0: <32} | {1: <35}\n", "Flags", format!("{:#b}", self.flags))?;
-        write!(f, "{}\n", "-".repeat(70))?;
-        write!(f, "{0: <32} | {1: <35}\n", "Target address", format!("{:#x}", self.target_addr))?;
-        write!(f, "{}\n", "-".repeat(70))?;
-        write!(f, "{0: <32} | {1: <35}\n", "Family ID", format!("{:#x}", self.family_id))?;
-        write!(f, "{}\n", "-".repeat(70))?;
-        write!(f, "{0: <32} | {1: <35}\n", "Magic end", format!("{:#x}", self.magic_end))?;
+        writeln!(f, "{}", "=".repeat(70))?;
+        writeln!(f, "{0: <32} | {1: <35}", "Magic start 0", format!("{:#x}", self.magic_start0))?;
+        writeln!(f, "{}", "-".repeat(70))?;
+        writeln!(f, "{0: <32} | {1: <35}", "Magic start 1", format!("{:#x}", self.magic_start1))?;
+        writeln!(f, "{}", "-".repeat(70))?;
+        writeln!(f, "{0: <32} | {1: <35}", "Flags", format!("{:#b}", self.flags))?;
+        writeln!(f, "{}", "-".repeat(70))?;
+        writeln!(f, "{0: <32} | {1: <35}", "Target address", format!("{:#x}", self.target_addr))?;
+        writeln!(f, "{}", "-".repeat(70))?;
+        writeln!(f, "{0: <32} | {1: <35}", "Family ID", format!("{:#x}", self.family_id))?;
+        writeln!(f, "{}", "-".repeat(70))?;
+        writeln!(f, "{0: <32} | {1: <35}", "Magic end", format!("{:#x}", self.magic_end))?;
         Ok(())
     }
 }
