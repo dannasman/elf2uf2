@@ -59,10 +59,10 @@ impl Elf2Uf2 {
                     k += 1;
                 }
                 block.magic_end = MAGIC_END;
-                self.uf2.blocks.push(block);
                 start_addr += PAYLOAD_SIZE;
                 j += 1;
                 k = 0;
+                self.uf2.blocks.push(block);
             }
         }
 
@@ -76,7 +76,7 @@ mod tests {
     use crate::elf2uf2::Elf2Uf2;
 
     #[test]
-    fn test_elf2uf2_arm() {
+    fn test_elf2uf2() {
         let steps: Vec<(&str, &str)> = vec![
             ("test/test_arm.elf", "test/correct_arm.uf2"),
             ("test/test_riscv.elf", "test/correct_riscv.uf2"),
