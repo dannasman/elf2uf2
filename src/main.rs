@@ -15,11 +15,5 @@ fn main() {
     let mut elf2uf2 = elf2uf2::Elf2Uf2::new();
     elf2uf2.convert(&data, &mut buf);
 
-    println!("{:?}", buf);
     fs::write(outfile_name, buf).unwrap();
-
-    let mut elf: elf::Elf32 = elf::Elf32::new();
-    elf.parse_elf(&data);
-    println!("{}", elf);
-    println!("{}", elf2uf2.uf2);
 }
