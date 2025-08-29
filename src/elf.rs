@@ -3,6 +3,7 @@ use std::fmt;
 type Elf32Addr     = u32;
 type Elf32Half     = u16;
 type Elf32Off      = u32;
+#[allow(dead_code)]
 type Elf32Sword    = i32;
 type Elf32Word     = u32;
 
@@ -44,7 +45,7 @@ pub struct Elf32Ehdr {
 
 impl fmt::Display for Elf32Ehdr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}\n", "-".repeat(70));
+        write!(f, "{}\n", "-".repeat(70))?;
         let type_str = match self.e_type {
             0       => "ET_NONE",
             1       => "ET_REL",
@@ -55,9 +56,9 @@ impl fmt::Display for Elf32Ehdr {
             0xffff  => "ET_HIPROC",
             _       => "unknown",
         };
-        write!(f, "{0: <32} | {1: <16} | {2: <16}\n", "Type", self.e_type, type_str);
+        write!(f, "{0: <32} | {1: <16} | {2: <16}\n", "Type", self.e_type, type_str)?;
 
-        write!(f, "{}\n", "-".repeat(70));
+        write!(f, "{}\n", "-".repeat(70))?;
         let machine_str = match self.e_machine {
             0       => "EM_NONE",
             1       => "EM_M32",
@@ -73,42 +74,42 @@ impl fmt::Display for Elf32Ehdr {
             11..=16 => "RESERVED",
             _       => "unknown",
         };
-        write!(f, "{0: <32} | {1: <16} | {2: <16}\n", "Arch", self.e_machine, machine_str);
+        write!(f, "{0: <32} | {1: <16} | {2: <16}\n", "Arch", self.e_machine, machine_str)?;
 
-        write!(f, "{}\n", "-".repeat(70));
+        write!(f, "{}\n", "-".repeat(70))?;
         let version_str = match self.e_version {
             0       => "EV_NONE",
             1       => "EV_CURRENT",
             _       => "unknown",
         };
-        write!(f, "{0: <32} | {1: <16} | {2: <16}\n", "Version", self.e_version, version_str);
+        write!(f, "{0: <32} | {1: <16} | {2: <16}\n", "Version", self.e_version, version_str)?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Entry point", format!("{:#x}", self.e_entry));
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Entry point", format!("{:#x}", self.e_entry))?;
         
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Program header offset", self.e_phoff);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Program header offset", self.e_phoff)?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Section header offset", self.e_shoff);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Section header offset", self.e_shoff)?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "ELF header size", self.e_ehsize);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "ELF header size", self.e_ehsize)?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Program header table entry size", self.e_phentsize);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Program header table entry size", self.e_phentsize)?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Program header table entry count", self.e_phnum);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Program header table entry count", self.e_phnum)?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Section header table entry size", self.e_shentsize);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Section header table entry size", self.e_shentsize)?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Section header table entry count", self.e_shnum);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Section header table entry count", self.e_shnum)?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Section name string table start", self.e_shstrndx);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Section name string table start", self.e_shstrndx)?;
 
         Ok(())
     }
@@ -150,10 +151,10 @@ struct Elf32Shdr {
 
 impl fmt::Display for Elf32Shdr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Section header name index", self.sh_name);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Section header name index", self.sh_name)?;
 
-        write!(f, "{}\n", "-".repeat(70));
+        write!(f, "{}\n", "-".repeat(70))?;
         let type_str = match self.sh_type {
             0                       => "SHT_NULL",
             1                       => "SHT_PROGBITS",
@@ -171,32 +172,32 @@ impl fmt::Display for Elf32Shdr {
             0x80000000..=0xffffffff => "SHT_USER",
             _       => "unknown",
         };
-        write!(f, "{0: <32} | {1: <16} | {2: <16}\n", "Section type", self.sh_type, type_str);
+        write!(f, "{0: <32} | {1: <16} | {2: <16}\n", "Section type", self.sh_type, type_str)?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Section flags", format!("{:#b}", self.sh_flags));
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Section flags", format!("{:#b}", self.sh_flags))?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Section address", format!("{:#x}", self.sh_addr));
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Section address", format!("{:#x}", self.sh_addr))?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Section offset", self.sh_offset);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Section offset", self.sh_offset)?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Section size", self.sh_size);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Section size", self.sh_size)?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Section header table index link", self.sh_link);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Section header table index link", self.sh_link)?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Section extra information", self.sh_info);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Section extra information", self.sh_info)?;
 
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Section address alignment", self.sh_addralign);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Section address alignment", self.sh_addralign)?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Section entry size", self.sh_entsize);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Section entry size", self.sh_entsize)?;
 
         Ok(())
     }
@@ -219,6 +220,7 @@ impl Elf32Shdr {
     }
 }
 
+#[allow(dead_code)]
 struct Elf32Sym {
     st_name: Elf32Word,
     st_value: Elf32Addr,
@@ -227,11 +229,13 @@ struct Elf32Sym {
     st_shndx: Elf32Half
 }
 
+#[allow(dead_code)]
 struct Elf32Rel {
     r_offset: Elf32Addr,
     r_info: Elf32Word
 }
 
+#[allow(dead_code)]
 struct Elf32Rela {
     r_offset: Elf32Addr,
     r_info: Elf32Word,
@@ -251,7 +255,7 @@ pub struct Elf32Phdr {
 
 impl fmt::Display for Elf32Phdr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}\n", "=".repeat(70));
+        write!(f, "{}\n", "=".repeat(70))?;
         let type_str = match self.p_type {
             0                       => "PT_NULL",
             1                       => "PT_LOAD",
@@ -263,28 +267,28 @@ impl fmt::Display for Elf32Phdr {
             0x70000000..=0x7fffffff => "PT_PROC",
             _       => "unknown",
         };
-        write!(f, "{0: <32} | {1: <16} | {2: <16}\n", "Segment type", self.p_type, type_str);
+        write!(f, "{0: <32} | {1: <16} | {2: <16}\n", "Segment type", self.p_type, type_str)?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Segment offset", self.p_offset);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Segment offset", self.p_offset)?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Segment virtual address", format!("{:#x}", self.p_vaddr));
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Segment virtual address", format!("{:#x}", self.p_vaddr))?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Segment physical address", format!("{:#x}", self.p_paddr));
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Segment physical address", format!("{:#x}", self.p_paddr))?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Segment file image size", self.p_filesz);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Segment file image size", self.p_filesz)?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Segment memory image size", self.p_memsz);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Segment memory image size", self.p_memsz)?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Segment flags", format!("{:#b}", self.p_flags));
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Segment flags", format!("{:#b}", self.p_flags))?;
 
-        write!(f, "{}\n", "-".repeat(70));
-        write!(f, "{0: <32} | {1: <35}\n", "Segment address alignment", self.p_align);
+        write!(f, "{}\n", "-".repeat(70))?;
+        write!(f, "{0: <32} | {1: <35}\n", "Segment address alignment", self.p_align)?;
 
         Ok(())
     }
@@ -314,19 +318,19 @@ pub struct Elf32 {
 
 impl fmt::Display for Elf32 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.ehdr);
+        write!(f, "{}", self.ehdr)?;
         for phdr in &self.phdrs {
-            write!(f, "{}", phdr);
+            write!(f, "{}", phdr)?;
         }
         for shdr in &self.shdrs {
-            write!(f, "{}\n", "=".repeat(70));
+            write!(f, "{}\n", "=".repeat(70))?;
             let mut i = shdr.sh_name as usize;
             while self.str_tab[i] != 0 {
-                write!(f, "{}", self.str_tab[i] as char);
+                write!(f, "{}", self.str_tab[i] as char)?;
                 i += 1;
             }
-            write!(f, "\n");
-            write!(f, "{}", shdr);
+            write!(f, "\n")?;
+            write!(f, "{}", shdr)?;
         }
         Ok(())
     }
