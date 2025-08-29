@@ -70,66 +70,23 @@ impl Uf2 {
 
     pub fn write(&self, buf: &mut Vec<u8>) {
         let num_blocks: u32 = self.blocks.len() as u32;
-        for (block_no, block) in self.blocks.iter().enumerate() {
-            let mut i = 0;
-            while i < 32 {
-                buf.push(((block.magic_start0 >> i) & 0xff) as u8);
-                i += 8;
+        for (i, block) in self.blocks.iter().enumerate() {
+            assert!(i <= u32::MAX as usize);
+            let block_no = i as u32;
+            buf.extend_from_slice(&block.magic_start0.to_le_bytes());
+            buf.extend_from_slice(&block.magic_start1.to_le_bytes());
+            buf.extend_from_slice(&block.flags.to_le_bytes());
+            buf.extend_from_slice(&block.target_addr.to_le_bytes());
+            buf.extend_from_slice(&block.payload_size.to_le_bytes());
+            buf.extend_from_slice(&block_no.to_le_bytes());
+            buf.extend_from_slice(&num_blocks.to_le_bytes());
+            buf.extend_from_slice(&block.family_id.to_le_bytes());
+            let mut j = 0;
+            while j < 476 {
+                buf.push(block.data[j]);
+                j += 1;
             }
-
-            i = 0;
-            while i < 32 {
-                buf.push(((block.magic_start1 >> i) & 0xff) as u8);
-                i += 8;
-            }
-
-            i = 0;
-            while i < 32 {
-                buf.push(((block.flags >> i) & 0xff) as u8);
-                i += 8;
-            }
-
-            i = 0;
-            while i < 32 {
-                buf.push(((block.target_addr >> i) & 0xff) as u8);
-                i += 8;
-            }
-
-            i = 0;
-            while i < 32 {
-                buf.push(((block.payload_size >> i) & 0xff) as u8);
-                i += 8;
-            }
-
-            i = 0;
-            while i < 32 {
-                buf.push(((block_no >> i) & 0xff) as u8);
-                i += 8;
-            }
-
-            i = 0;
-            while i < 32 {
-                buf.push(((num_blocks >> i) & 0xff) as u8);
-                i += 8;
-            }
-
-            i = 0;
-            while i < 32 {
-                buf.push(((block.family_id >> i) & 0xff) as u8);
-                i += 8;
-            }
-
-            i = 0;
-            while i < 476 {
-                buf.push(block.data[i]);
-                i += 1;
-            }
-
-            i = 0;
-            while i < 32 {
-                buf.push(((block.magic_end >> i) & 0xff) as u8);
-                i += 8;
-            }
+            buf.extend_from_slice(&block.magic_end.to_le_bytes());
         }
     }
 }
