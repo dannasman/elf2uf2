@@ -42,7 +42,7 @@ impl Elf2Uf2 {
             let n: usize = ((file_size + PAYLOAD_SIZE - 1) / PAYLOAD_SIZE) as usize;
             let i: usize = phdr.p_offset as usize;
             let mut j: usize = 0;
-            let mut start_addr: u32 = phdr.p_paddr & !0xff;
+            let mut start_addr: u32 = phdr.p_paddr & !(PAYLOAD_SIZE - 1);
             let mut k: usize = (phdr.p_paddr - start_addr) as usize;
             while j < n {
                 let mut block = Uf2Block::new();
