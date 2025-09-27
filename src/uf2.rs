@@ -10,7 +10,7 @@ pub struct Uf2Block {
     pub num_blocks: u32,*/
     pub family_id: u32,
     pub data: [u8; 476],
-    pub magic_end: u32
+    pub magic_end: u32,
 }
 
 impl Uf2Block {
@@ -25,7 +25,7 @@ impl Uf2Block {
             num_blocks: 0,*/
             family_id: 0,
             data: [0; 476],
-            magic_end: 0       
+            magic_end: 0,
         }
     }
 }
@@ -33,23 +33,53 @@ impl Uf2Block {
 impl fmt::Display for Uf2Block {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         writeln!(f, "{}", "=".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Magic start 0", format!("{:#x}", self.magic_start0))?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Magic start 0",
+            format!("{:#x}", self.magic_start0)
+        )?;
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Magic start 1", format!("{:#x}", self.magic_start1))?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Magic start 1",
+            format!("{:#x}", self.magic_start1)
+        )?;
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Flags", format!("{:#b}", self.flags))?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Flags",
+            format!("{:#b}", self.flags)
+        )?;
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Target address", format!("{:#x}", self.target_addr))?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Target address",
+            format!("{:#x}", self.target_addr)
+        )?;
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Family ID", format!("{:#x}", self.family_id))?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Family ID",
+            format!("{:#x}", self.family_id)
+        )?;
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Magic end", format!("{:#x}", self.magic_end))?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Magic end",
+            format!("{:#x}", self.magic_end)
+        )?;
         Ok(())
     }
 }
 
 pub struct Uf2 {
-    pub blocks: Vec<Uf2Block>
+    pub blocks: Vec<Uf2Block>,
 }
 
 impl fmt::Display for Uf2 {
@@ -63,9 +93,7 @@ impl fmt::Display for Uf2 {
 
 impl Uf2 {
     pub fn new() -> Uf2 {
-        Uf2 {
-            blocks: Vec::new()
-        }
+        Uf2 { blocks: Vec::new() }
     }
 
     pub fn write(&self, buf: &mut Vec<u8>) {

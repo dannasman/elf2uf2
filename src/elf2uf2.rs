@@ -1,22 +1,22 @@
 use crate::elf::*;
 use crate::uf2::*;
 
-const HAS_FAMILY_ID: u32    = 0x00002000;
-const MAGIC_START0: u32     = 0x0a324655;
-const MAGIC_START1: u32     = 0x9e5d5157;
-const MAGIC_END: u32        = 0x0ab16f30;
-const PAYLOAD_SIZE: u32     = 256;
+const HAS_FAMILY_ID: u32 = 0x00002000;
+const MAGIC_START0: u32 = 0x0a324655;
+const MAGIC_START1: u32 = 0x9e5d5157;
+const MAGIC_END: u32 = 0x0ab16f30;
+const PAYLOAD_SIZE: u32 = 256;
 
 pub struct Elf2Uf2 {
     elf: Elf32,
-    pub uf2: Uf2
+    pub uf2: Uf2,
 }
 
 impl Elf2Uf2 {
     pub fn new() -> Elf2Uf2 {
         Elf2Uf2 {
             elf: Elf32::new(),
-            uf2: Uf2::new()
+            uf2: Uf2::new(),
         }
     }
 
@@ -24,9 +24,9 @@ impl Elf2Uf2 {
         self.elf.parse_elf(data);
 
         let family_id: u32 = match self.elf.ehdr.e_machine {
-            40      => 0xe48bff59, /* ARM */
-            243     => 0xe48bff5a, /* RISCV */
-            _       => 0xe48bff58, /* generic catch-all data */
+            40 => 0xe48bff59,  /* ARM */
+            243 => 0xe48bff5a, /* RISCV */
+            _ => 0xe48bff58,   /* generic catch-all data */
         };
 
         for phdr in &self.elf.phdrs {
@@ -45,24 +45,38 @@ impl Elf2Uf2 {
             let mut start_addr: u32 = phdr.p_paddr & !(PAYLOAD_SIZE - 1);
             let mut k: usize = (phdr.p_paddr - start_addr) as usize;
             while j < n {
-                let mut block = Uf2Block::new();
-                block.magic_start0 = MAGIC_START0;
-                block.magic_start1 = MAGIC_START1;
-                block.flags |= HAS_FAMILY_ID;
-                block.target_addr = start_addr;
-                block.payload_size = PAYLOAD_SIZE;
-                block.family_id = family_id;
-                while k < PAYLOAD_SIZE as usize {
-                    if j*(PAYLOAD_SIZE as usize)+k < (file_size as usize) {
-                        block.data[k] = data[i+j*(PAYLOAD_SIZE as usize)+k];
+                if let Some(block) = self
+                    .uf2
+                    .blocks
+                    .iter_mut()
+                    .find(|b| b.target_addr == start_addr)
+                {
+                    while k < PAYLOAD_SIZE as usize {
+                        if j * (PAYLOAD_SIZE as usize) + k < (file_size as usize) {
+                            block.data[k] = data[i + j * (PAYLOAD_SIZE as usize) + k];
+                        }
+                        k += 1;
                     }
-                    k += 1;
+                } else {
+                    let mut block = Uf2Block::new();
+                    block.magic_start0 = MAGIC_START0;
+                    block.magic_start1 = MAGIC_START1;
+                    block.flags |= HAS_FAMILY_ID;
+                    block.target_addr = start_addr;
+                    block.payload_size = PAYLOAD_SIZE;
+                    block.family_id = family_id;
+                    while k < PAYLOAD_SIZE as usize {
+                        if j * (PAYLOAD_SIZE as usize) + k < (file_size as usize) {
+                            block.data[k] = data[i + j * (PAYLOAD_SIZE as usize) + k];
+                        }
+                        k += 1;
+                    }
+                    block.magic_end = MAGIC_END;
+                    self.uf2.blocks.push(block);
                 }
-                block.magic_end = MAGIC_END;
                 start_addr += PAYLOAD_SIZE;
                 j += 1;
                 k = 0;
-                self.uf2.blocks.push(block);
             }
         }
 
@@ -72,8 +86,8 @@ impl Elf2Uf2 {
 
 #[cfg(test)]
 mod tests {
-    use std::fs;
     use crate::elf2uf2::Elf2Uf2;
+    use std::fs;
 
     #[test]
     fn test_elf2uf2() {
@@ -83,10 +97,8 @@ mod tests {
         ];
 
         for (elf, uf2) in steps {
-            let data: Vec<u8> = fs::read(elf)
-                            .expect("Should be a elf file given as input");
-            let correct: Vec<u8> = fs::read(uf2)
-                            .expect("Should be a uf2 file given as input");
+            let data: Vec<u8> = fs::read(elf).expect("Should be a elf file given as input");
+            let correct: Vec<u8> = fs::read(uf2).expect("Should be a uf2 file given as input");
             let mut buf = Vec::<u8>::new();
             let mut elf2uf2 = Elf2Uf2::new();
             elf2uf2.convert(&data, &mut buf);

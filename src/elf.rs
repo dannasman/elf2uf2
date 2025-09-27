@@ -1,12 +1,11 @@
 use std::fmt;
 
 #[allow(dead_code)]
-type Elf32Addr     = u32;
-type Elf32Half     = u16;
-type Elf32Off      = u32;
-type Elf32Sword    = i32;
-type Elf32Word     = u32;
-
+type Elf32Addr = u32;
+type Elf32Half = u16;
+type Elf32Off = u32;
+type Elf32Sword = i32;
+type Elf32Word = u32;
 
 fn slice_to_u16(slice: &[u8]) -> u16 {
     assert_eq!(slice.len(), 2);
@@ -40,76 +39,121 @@ pub struct Elf32Ehdr {
     e_phnum: Elf32Half,
     e_shentsize: Elf32Half,
     e_shnum: Elf32Half,
-    e_shstrndx: Elf32Half
+    e_shstrndx: Elf32Half,
 }
 
 impl fmt::Display for Elf32Ehdr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         writeln!(f, "{}", "-".repeat(70))?;
         let type_str = match self.e_type {
-            0       => "ET_NONE",
-            1       => "ET_REL",
-            2       => "ET_EXEC",
-            3       => "ET_DYN",
-            4       => "ET_CORE",
-            0xff00  => "ET_LOPROC",
-            0xffff  => "ET_HIPROC",
-            _       => "unknown",
+            0 => "ET_NONE",
+            1 => "ET_REL",
+            2 => "ET_EXEC",
+            3 => "ET_DYN",
+            4 => "ET_CORE",
+            0xff00 => "ET_LOPROC",
+            0xffff => "ET_HIPROC",
+            _ => "unknown",
         };
-        writeln!(f, "{0: <32} | {1: <16} | {2: <16}", "Type", self.e_type, type_str)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <16} | {2: <16}",
+            "Type", self.e_type, type_str
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
         let machine_str = match self.e_machine {
-            0       => "EM_NONE",
-            1       => "EM_M32",
-            2       => "EM_SPARC",
-            3       => "EM_386",
-            4       => "EM_68K",
-            5       => "EM_88K",
-            7       => "EM_860",
-            8       => "EM_MIPS",
-            10      => "EM_MIPS_RS4_BE",
-            40      => "EM_ARM",
-            243     => "EM_RISCV",
+            0 => "EM_NONE",
+            1 => "EM_M32",
+            2 => "EM_SPARC",
+            3 => "EM_386",
+            4 => "EM_68K",
+            5 => "EM_88K",
+            7 => "EM_860",
+            8 => "EM_MIPS",
+            10 => "EM_MIPS_RS4_BE",
+            40 => "EM_ARM",
+            243 => "EM_RISCV",
             11..=16 => "RESERVED",
-            _       => "unknown",
+            _ => "unknown",
         };
-        writeln!(f, "{0: <32} | {1: <16} | {2: <16}", "Arch", self.e_machine, machine_str)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <16} | {2: <16}",
+            "Arch", self.e_machine, machine_str
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
         let version_str = match self.e_version {
-            0       => "EV_NONE",
-            1       => "EV_CURRENT",
-            _       => "unknown",
+            0 => "EV_NONE",
+            1 => "EV_CURRENT",
+            _ => "unknown",
         };
-        writeln!(f, "{0: <32} | {1: <16} | {2: <16}", "Version", self.e_version, version_str)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <16} | {2: <16}",
+            "Version", self.e_version, version_str
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Entry point", format!("{:#x}", self.e_entry))?;
-        
-        writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Program header offset", self.e_phoff)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Entry point",
+            format!("{:#x}", self.e_entry)
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Section header offset", self.e_shoff)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Program header offset", self.e_phoff
+        )?;
+
+        writeln!(f, "{}", "-".repeat(70))?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Section header offset", self.e_shoff
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
         writeln!(f, "{0: <32} | {1: <35}", "ELF header size", self.e_ehsize)?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Program header table entry size", self.e_phentsize)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Program header table entry size", self.e_phentsize
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Program header table entry count", self.e_phnum)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Program header table entry count", self.e_phnum
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Section header table entry size", self.e_shentsize)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Section header table entry size", self.e_shentsize
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Section header table entry count", self.e_shnum)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Section header table entry count", self.e_shnum
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Section name string table start", self.e_shstrndx)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Section name string table start", self.e_shstrndx
+        )?;
 
         Ok(())
     }
@@ -117,22 +161,22 @@ impl fmt::Display for Elf32Ehdr {
 
 impl Elf32Ehdr {
     pub fn new() -> Elf32Ehdr {
-            Elf32Ehdr {
-                e_ident: [0; 16],
-                e_type: 0,
-                e_machine: 0,
-                e_version: 0,
-                e_entry: 0,
-                e_phoff: 0,
-                e_shoff: 0,
-                e_flags: 0,
-                e_ehsize: 0,
-                e_phentsize: 0,
-                e_phnum: 0,
-                e_shentsize: 0,
-                e_shnum: 0,
-                e_shstrndx: 0
-            }
+        Elf32Ehdr {
+            e_ident: [0; 16],
+            e_type: 0,
+            e_machine: 0,
+            e_version: 0,
+            e_entry: 0,
+            e_phoff: 0,
+            e_shoff: 0,
+            e_flags: 0,
+            e_ehsize: 0,
+            e_phentsize: 0,
+            e_phnum: 0,
+            e_shentsize: 0,
+            e_shnum: 0,
+            e_shstrndx: 0,
+        }
     }
 }
 
@@ -146,39 +190,57 @@ struct Elf32Shdr {
     sh_link: Elf32Word,
     sh_info: Elf32Word,
     sh_addralign: Elf32Word,
-    sh_entsize: Elf32Word
+    sh_entsize: Elf32Word,
 }
 
 impl fmt::Display for Elf32Shdr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Section header name index", self.sh_name)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Section header name index", self.sh_name
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
         let type_str = match self.sh_type {
-            0                       => "SHT_NULL",
-            1                       => "SHT_PROGBITS",
-            2                       => "SHT_SYMTAB",
-            3                       => "SHT_STRTAB",
-            4                       => "SHT_RELA",
-            5                       => "SHT_HASH",
-            6                       => "SHT_DYNAMIC",
-            7                       => "SHT_NOTE",
-            8                       => "SHT_NOBITS",
-            9                       => "SHT_REL",
-            10                      => "SHT_SHLIB",
-            11                      => "SHT_DYNSYM",
+            0 => "SHT_NULL",
+            1 => "SHT_PROGBITS",
+            2 => "SHT_SYMTAB",
+            3 => "SHT_STRTAB",
+            4 => "SHT_RELA",
+            5 => "SHT_HASH",
+            6 => "SHT_DYNAMIC",
+            7 => "SHT_NOTE",
+            8 => "SHT_NOBITS",
+            9 => "SHT_REL",
+            10 => "SHT_SHLIB",
+            11 => "SHT_DYNSYM",
             0x70000000..=0x7fffffff => "SHT_PROC",
             0x80000000..=0xffffffff => "SHT_USER",
-            _       => "unknown",
+            _ => "unknown",
         };
-        writeln!(f, "{0: <32} | {1: <16} | {2: <16}", "Section type", self.sh_type, type_str)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <16} | {2: <16}",
+            "Section type", self.sh_type, type_str
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Section flags", format!("{:#b}", self.sh_flags))?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Section flags",
+            format!("{:#b}", self.sh_flags)
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Section address", format!("{:#x}", self.sh_addr))?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Section address",
+            format!("{:#x}", self.sh_addr)
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
         writeln!(f, "{0: <32} | {1: <35}", "Section offset", self.sh_offset)?;
@@ -187,17 +249,32 @@ impl fmt::Display for Elf32Shdr {
         writeln!(f, "{0: <32} | {1: <35}", "Section size", self.sh_size)?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Section header table index link", self.sh_link)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Section header table index link", self.sh_link
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Section extra information", self.sh_info)?;
-
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Section extra information", self.sh_info
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Section address alignment", self.sh_addralign)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Section address alignment", self.sh_addralign
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Section entry size", self.sh_entsize)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Section entry size", self.sh_entsize
+        )?;
 
         Ok(())
     }
@@ -215,7 +292,7 @@ impl Elf32Shdr {
             sh_link: 0,
             sh_info: 0,
             sh_addralign: 0,
-            sh_entsize: 0
+            sh_entsize: 0,
         }
     }
 }
@@ -226,13 +303,13 @@ struct Elf32Sym {
     st_value: Elf32Addr,
     st_size: Elf32Word,
     st_other: u8,
-    st_shndx: Elf32Half
+    st_shndx: Elf32Half,
 }
 
 #[allow(dead_code)]
 struct Elf32Rel {
     r_offset: Elf32Addr,
-    r_info: Elf32Word
+    r_info: Elf32Word,
 }
 
 #[allow(dead_code)]
@@ -257,38 +334,69 @@ impl fmt::Display for Elf32Phdr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         writeln!(f, "{}", "=".repeat(70))?;
         let type_str = match self.p_type {
-            0                       => "PT_NULL",
-            1                       => "PT_LOAD",
-            2                       => "PT_DYNAMIC",
-            3                       => "PT_INTERP",
-            4                       => "PT_NOTE",
-            5                       => "PT_SHLIB",
-            6                       => "PT_PHDR",
+            0 => "PT_NULL",
+            1 => "PT_LOAD",
+            2 => "PT_DYNAMIC",
+            3 => "PT_INTERP",
+            4 => "PT_NOTE",
+            5 => "PT_SHLIB",
+            6 => "PT_PHDR",
             0x70000000..=0x7fffffff => "PT_PROC",
-            _       => "unknown",
+            _ => "unknown",
         };
-        writeln!(f, "{0: <32} | {1: <16} | {2: <16}", "Segment type", self.p_type, type_str)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <16} | {2: <16}",
+            "Segment type", self.p_type, type_str
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
         writeln!(f, "{0: <32} | {1: <35}", "Segment offset", self.p_offset)?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Segment virtual address", format!("{:#x}", self.p_vaddr))?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Segment virtual address",
+            format!("{:#x}", self.p_vaddr)
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Segment physical address", format!("{:#x}", self.p_paddr))?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Segment physical address",
+            format!("{:#x}", self.p_paddr)
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Segment file image size", self.p_filesz)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Segment file image size", self.p_filesz
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Segment memory image size", self.p_memsz)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Segment memory image size", self.p_memsz
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Segment flags", format!("{:#b}", self.p_flags))?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Segment flags",
+            format!("{:#b}", self.p_flags)
+        )?;
 
         writeln!(f, "{}", "-".repeat(70))?;
-        writeln!(f, "{0: <32} | {1: <35}", "Segment address alignment", self.p_align)?;
+        writeln!(
+            f,
+            "{0: <32} | {1: <35}",
+            "Segment address alignment", self.p_align
+        )?;
 
         Ok(())
     }
@@ -356,43 +464,43 @@ impl Elf32 {
             i += 1;
         }
 
-        self.ehdr.e_type = slice_to_u16(&data[i..i+2]);
+        self.ehdr.e_type = slice_to_u16(&data[i..i + 2]);
         i += 2;
 
-        self.ehdr.e_machine = slice_to_u16(&data[i..i+2]);
+        self.ehdr.e_machine = slice_to_u16(&data[i..i + 2]);
         i += 2;
 
-        self.ehdr.e_version = slice_to_u32(&data[i..i+4]);
+        self.ehdr.e_version = slice_to_u32(&data[i..i + 4]);
         i += 4;
 
-        self.ehdr.e_entry = slice_to_u32(&data[i..i+4]);
+        self.ehdr.e_entry = slice_to_u32(&data[i..i + 4]);
         i += 4;
 
-        self.ehdr.e_phoff = slice_to_u32(&data[i..i+4]);
+        self.ehdr.e_phoff = slice_to_u32(&data[i..i + 4]);
         i += 4;
 
-        self.ehdr.e_shoff = slice_to_u32(&data[i..i+4]);
+        self.ehdr.e_shoff = slice_to_u32(&data[i..i + 4]);
         i += 4;
 
-        self.ehdr.e_flags = slice_to_u32(&data[i..i+4]);
+        self.ehdr.e_flags = slice_to_u32(&data[i..i + 4]);
         i += 4;
 
-        self.ehdr.e_ehsize = slice_to_u16(&data[i..i+2]);
+        self.ehdr.e_ehsize = slice_to_u16(&data[i..i + 2]);
         i += 2;
 
-        self.ehdr.e_phentsize = slice_to_u16(&data[i..i+2]);
+        self.ehdr.e_phentsize = slice_to_u16(&data[i..i + 2]);
         i += 2;
 
-        self.ehdr.e_phnum = slice_to_u16(&data[i..i+2]);
+        self.ehdr.e_phnum = slice_to_u16(&data[i..i + 2]);
         i += 2;
 
-        self.ehdr.e_shentsize = slice_to_u16(&data[i..i+2]);
+        self.ehdr.e_shentsize = slice_to_u16(&data[i..i + 2]);
         i += 2;
 
-        self.ehdr.e_shnum = slice_to_u16(&data[i..i+2]);
+        self.ehdr.e_shnum = slice_to_u16(&data[i..i + 2]);
         i += 2;
 
-        self.ehdr.e_shstrndx = slice_to_u16(&data[i..i+2]);
+        self.ehdr.e_shstrndx = slice_to_u16(&data[i..i + 2]);
     }
 
     fn parse_phdrs(&mut self, data: &[u8]) {
@@ -401,36 +509,38 @@ impl Elf32 {
 
         let mut i: usize = self.ehdr.e_phoff as usize;
         let mut j = 0;
-        while j < n*size {
+        while j < n * size {
             let mut phdr: Elf32Phdr = Elf32Phdr::new();
 
-            phdr.p_type = slice_to_u32(&data[i..i+4]);
+            phdr.p_type = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
-            phdr.p_offset = slice_to_u32(&data[i..i+4]);
+            phdr.p_offset = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
-            phdr.p_vaddr = slice_to_u32(&data[i..i+4]);
+            phdr.p_vaddr = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
-            phdr.p_paddr = slice_to_u32(&data[i..i+4]);
+            phdr.p_paddr = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
-            phdr.p_filesz = slice_to_u32(&data[i..i+4]);
+            phdr.p_filesz = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
-            phdr.p_memsz = slice_to_u32(&data[i..i+4]);
+            phdr.p_memsz = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
-            phdr.p_flags = slice_to_u32(&data[i..i+4]);
+            phdr.p_flags = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
-            phdr.p_align = slice_to_u32(&data[i..i+4]);
+            phdr.p_align = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
             self.phdrs.push(phdr);
             j += size;
         }
+
+        self.phdrs.sort_by_key(|phdr| phdr.p_paddr);
     }
 
     fn parse_shdrs(&mut self, data: &[u8]) {
@@ -439,37 +549,37 @@ impl Elf32 {
 
         let mut i: usize = self.ehdr.e_shoff as usize;
         let mut j = 0;
-        while j < n*size {
+        while j < n * size {
             let mut shdr: Elf32Shdr = Elf32Shdr::new();
 
-            shdr.sh_name = slice_to_u32(&data[i..i+4]);
+            shdr.sh_name = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
-            shdr.sh_type = slice_to_u32(&data[i..i+4]);
+            shdr.sh_type = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
-            shdr.sh_flags = slice_to_u32(&data[i..i+4]);
+            shdr.sh_flags = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
-            shdr.sh_addr = slice_to_u32(&data[i..i+4]);
+            shdr.sh_addr = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
-            shdr.sh_offset = slice_to_u32(&data[i..i+4]);
+            shdr.sh_offset = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
-            shdr.sh_size = slice_to_u32(&data[i..i+4]);
+            shdr.sh_size = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
-            shdr.sh_link = slice_to_u32(&data[i..i+4]);
+            shdr.sh_link = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
-            shdr.sh_info = slice_to_u32(&data[i..i+4]);
+            shdr.sh_info = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
-            shdr.sh_addralign = slice_to_u32(&data[i..i+4]);
+            shdr.sh_addralign = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
-            shdr.sh_entsize = slice_to_u32(&data[i..i+4]);
+            shdr.sh_entsize = slice_to_u32(&data[i..i + 4]);
             i += 4;
 
             if self.ehdr.e_shstrndx as usize == self.shdrs.len() {
