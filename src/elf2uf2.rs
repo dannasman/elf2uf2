@@ -8,7 +8,7 @@ const MAGIC_END: u32 = 0x0ab16f30;
 const PAYLOAD_SIZE: u32 = 256;
 
 pub struct Elf2Uf2 {
-    elf: Elf32,
+    pub elf: Elf32,
     pub uf2: Uf2,
 }
 
@@ -44,39 +44,42 @@ impl Elf2Uf2 {
             let mut j: usize = 0;
             let mut start_addr: u32 = phdr.p_paddr & !(PAYLOAD_SIZE - 1);
             let mut k: usize = (phdr.p_paddr - start_addr) as usize;
-            while j < n {
-                if let Some(block) = self
-                    .uf2
-                    .blocks
-                    .iter_mut()
-                    .find(|b| b.target_addr == start_addr)
-                {
-                    while k < PAYLOAD_SIZE as usize {
-                        if j * (PAYLOAD_SIZE as usize) + k < (file_size as usize) {
-                            block.data[k] = data[i + j * (PAYLOAD_SIZE as usize) + k];
-                        }
-                        k += 1;
+
+            if let Some(block) = self
+                .uf2
+                .blocks
+                .iter_mut()
+                .find(|b| b.target_addr == start_addr)
+            {
+                while k < PAYLOAD_SIZE as usize {
+                    if j * (PAYLOAD_SIZE as usize) + k < (file_size as usize) {
+                        block.data[k] = data[i + j * (PAYLOAD_SIZE as usize) + k];
                     }
-                } else {
-                    let mut block = Uf2Block::new();
-                    block.magic_start0 = MAGIC_START0;
-                    block.magic_start1 = MAGIC_START1;
-                    block.flags |= HAS_FAMILY_ID;
-                    block.target_addr = start_addr;
-                    block.payload_size = PAYLOAD_SIZE;
-                    block.family_id = family_id;
-                    while k < PAYLOAD_SIZE as usize {
-                        if j * (PAYLOAD_SIZE as usize) + k < (file_size as usize) {
-                            block.data[k] = data[i + j * (PAYLOAD_SIZE as usize) + k];
-                        }
-                        k += 1;
-                    }
-                    block.magic_end = MAGIC_END;
-                    self.uf2.blocks.push(block);
+                    k += 1;
                 }
                 start_addr += PAYLOAD_SIZE;
                 j += 1;
+            };
+
+            while j < n {
+                let mut block = Uf2Block::new();
+                block.magic_start0 = MAGIC_START0;
+                block.magic_start1 = MAGIC_START1;
+                block.flags |= HAS_FAMILY_ID;
+                block.target_addr = start_addr;
+                block.payload_size = PAYLOAD_SIZE;
+                block.family_id = family_id;
                 k = 0;
+                while k < PAYLOAD_SIZE as usize {
+                    if j * (PAYLOAD_SIZE as usize) + k < (file_size as usize) {
+                        block.data[k] = data[i + j * (PAYLOAD_SIZE as usize) + k];
+                    }
+                    k += 1;
+                }
+                block.magic_end = MAGIC_END;
+                self.uf2.blocks.push(block);
+                start_addr += PAYLOAD_SIZE;
+                j += 1;
             }
         }
 
